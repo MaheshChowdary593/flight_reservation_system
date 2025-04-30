@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Reservation - About</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+        /* About Page Styling */
+        .about-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        .about-section h2 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+            color: #333;  /* Dark text color for headings */
+        }
+        .about-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .card-3d-wrap {
+            min-width: 320px;
+            max-width: 350px;
+            margin: 1rem;
+        }
+        .feature-card {
+            background: #ffffff;  /* Solid background for each card */
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: #333;  /* Dark text for better visibility */
+        }
+        .feature-card h4 {
+            color: #333;  /* Heading color */
+            font-size: 1.6rem;
+        }
+        .feature-card p {
+            color: #555;  /* Text color for body text */
+            font-size: 1rem;
+        }
+        @media (max-width: 900px) {
+            .about-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card-3d-wrap {
+                min-width: 90vw;
+                max-width: 95vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('home') }}" class="navbar-logo">FlightReserve</a>
+            <ul class="navbar-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="col-12 text-center align-self-center py-5">
+                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                        <div class="about-section">
+                            <h2 style="color:white ;">About FlightReserve</h2>
+                            
+                            <div class="about-cards">
+                                <!-- Our Story -->
+                                <div class="card-3d-wrap mx-3 my-2">
+                                    <div class="card-3d-wrapper">
+                                        <div class="card-front feature-card">
+                                            <div class="center-wrap">
+                                                <div class="section text-center">
+                                                    <h4 class="mb-4 pb-3">Our Story</h4>
+                                                    <p>FlightReserve was founded in <strong>2025</strong> with a vision to make flight bookings seamless and reliable for everyone. We are passionate about connecting travelers across the globe through innovative technology.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Our Mission -->
+                                <div class="card-3d-wrap mx-3 my-2">
+                                    <div class="card-3d-wrapper">
+                                        <div class="card-front feature-card">
+                                            <div class="center-wrap">
+                                                <div class="section text-center">
+                                                    <h4 class="mb-4 pb-3">Our Mission</h4>
+                                                    <p>Our mission is to <strong>simplify air travel</strong> by offering a user-friendly platform, secure transactions, and excellent customer support, making every journey easy and memorable.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Why Choose Us -->
+                                <div class="card-3d-wrap mx-3 my-2">
+                                    <div class="card-3d-wrapper">
+                                        <div class="card-front feature-card">
+                                            <div class="center-wrap">
+                                                <div class="section text-center">
+                                                    <h4 class="mb-4 pb-3">Why Choose Us?</h4>
+                                                    <p>✈️ Easy flight searches<br>🛡️ Secure bookings<br>📞 24/7 support<br>🌍 Wide airline network<br>💰 Best deals</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Our Values -->
+                                <div class="card-3d-wrap mx-3 my-2">
+                                    <div class="card-3d-wrapper">
+                                        <div class="card-front feature-card">
+                                            <div class="center-wrap">
+                                                <div class="section text-center">
+                                                    <h4 class="mb-4 pb-3">Our Values</h4>
+                                                    <p>We stand for <strong>trust</strong>, <strong>transparency</strong>, <strong>innovation</strong>, and a <strong>customer-first</strong> mindset. Your satisfaction is at the core of everything we do.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Join Us -->
+                                <div class="card-3d-wrap mx-3 my-2">
+                                    <div class="card-3d-wrapper">
+                                        <div class="card-front feature-card">
+                                            <div class="center-wrap">
+                                                <div class="section text-center">
+                                                    <h4 class="mb-4 pb-3">Join Us!</h4>
+                                                    <p>Experience seamless travel booking with FlightReserve. Plan your journeys, find the best flights, and explore the world with us!</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- End of cards -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

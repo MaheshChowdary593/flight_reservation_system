@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // --- LOGIN FORM ---
+            const loginForm = document.querySelector('.form-box.login form');
+            if (loginForm) {
+                const loginUsername = loginForm.querySelector('input[type="text"]');
+                const loginPassword = loginForm.querySelector('input[type="password"]');
+        
+                // Create error elements if not present
+                let usernameError = loginForm.querySelector('.login-username-error');
+                if (!usernameError) {
+                    usernameError = document.createElement('small');
+                    usernameError.className = 'login-username-error text-danger';
+                    loginUsername.parentNode.appendChild(usernameError);
+                }
+                let passwordError = loginForm.querySelector('.login-password-error');
+                if (!passwordError) {
+                    passwordError = document.createElement('small');
+                    passwordError.className = 'login-password-error text-danger';
+                    loginPassword.parentNode.appendChild(passwordError);
+                }
+        
+                // Username validation while typing
+                loginUsername.addEventListener('input', function () {
+                    const val = loginUsername.value.trim();
+                    if (val.length < 2 || !/^[A-Za-z0-9_ ]+$/.test(val)) {
+                        usernameError.textContent = "Enter a valid username (letters, numbers, spaces, min 2 chars)";
+                        loginUsername.style.border = "2px solid red";
+                    } else {
+                        usernameError.textContent = "";
+                        loginUsername.style.border = "2px solid green";
+                    }
+                });
+        
+                // Password validation while typing
+                loginPassword.addEventListener('input', function () {
+                    const val = loginPassword.value.trim();
+                    let up=0, lc=0, num=0, cha=0;
+                    for (let i = 0; i < val.length; i++) {
+                        let char = val[i];
+                        if (char >= 'A' && char <= 'Z') up++;
+                        else if (char >= 'a' && char <= 'z') lc++;
+                        else if (char >= '0' && char <= '9') num++;
+                        else cha++;
+                    }
+                    if (!(up && lc && num && cha && val.length >= 8)) {
+                        passwordError.textContent = "Password: 1 uppercase, 1 lowercase, 1 number, 1 special char, min 8 chars";
+                        loginPassword.style.border = "2px solid red";
+                    } else {
+                        passwordError.textContent = "";
+                        loginPassword.style.border = "2px solid green";
+                    }
+                });
+            }
+        
+            // --- REGISTER FORM ---
+            const registerForm = document.querySelector('.form-box.register form');
+            if (registerForm) {
+                const regUsername = registerForm.querySelector('input[type="text"]');
+                const regEmail = registerForm.querySelector('input[type="email"]');
+                const regPassword = registerForm.querySelector('input[type="password"]');
+        
+                // Create error elements if not present
+                let usernameError = registerForm.querySelector('.register-username-error');
+                if (!usernameError) {
+                    usernameError = document.createElement('small');
+                    usernameError.className = 'register-username-error text-danger';
+                    regUsername.parentNode.appendChild(usernameError);
+                }
+                let emailError = registerForm.querySelector('.register-email-error');
+                if (!emailError) {
+                    emailError = document.createElement('small');
+                    emailError.className = 'register-email-error text-danger';
+                    regEmail.parentNode.appendChild(emailError);
+                }
+                let passwordError = registerForm.querySelector('.register-password-error');
+                if (!passwordError) {
+                    passwordError = document.createElement('small');
+                    passwordError.className = 'register-password-error text-danger';
+                    regPassword.parentNode.appendChild(passwordError);
+                }
+        
+                // Username validation while typing
+                regUsername.addEventListener('input', function () {
+                    const val = regUsername.value.trim();
+                    if (val.length < 2 || !/^[A-Za-z0-9_ ]+$/.test(val)) {
+                        usernameError.textContent = "Enter a valid username (letters, numbers, spaces, min 2 chars)";
+                        regUsername.style.border = "2px solid red";
+                    } else {
+                        usernameError.textContent = "";
+                        regUsername.style.border = "2px solid green";
+                    }
+                });
+        
+                // Email validation while typing
+                regEmail.addEventListener('input', function () {
+                    const val = regEmail.value.trim();
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(val)) {
+                        emailError.textContent = "Enter a valid email (e.g., name@domain.com)";
+                        regEmail.style.border = "2px solid red";
+                    } else {
+                        emailError.textContent = "";
+                        regEmail.style.border = "2px solid green";
+                    }
+                });
+        
+                // Password validation while typing
+                regPassword.addEventListener('input', function () {
+                    const val = regPassword.value.trim();
+                    let up=0, lc=0, num=0, cha=0;
+                    for (let i = 0; i < val.length; i++) {
+                        let char = val[i];
+                        if (char >= 'A' && char <= 'Z') up++;
+                        else if (char >= 'a' && char <= 'z') lc++;
+                        else if (char >= '0' && char <= '9') num++;
+                        else cha++;
+                    }
+                    if (!(up && lc && num && cha && val.length >= 8)) {
+                        passwordError.textContent = "Password: 1 uppercase, 1 lowercase, 1 number, 1 special char, min 8 chars";
+                        regPassword.style.border = "2px solid red";
+                    } else {
+                        passwordError.textContent = "";
+                        regPassword.style.border = "2px solid green";
+                    }
+                });
+            }
+        });
+</script>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+        <div class="form-box login">
+            <form action="{{ url_for('admin_login') }}" method="POST">
+                <h1>Admin Login</h1>
+                <div class="input-box">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <!-- In login.html -->
+                <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+                <button type="submit" name="login" class="btn">Login</button>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <form action="{{ url_for('admin_login') }}" method="POST">
+                <h1>Admin Signup</h1>
+                <div class="input-box">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <button type="submit" name="signup" class="btn">Register</button>
+            </form>
+        </div>
+
+        <div class="toggle-box">
+            <div class="toggle-panel toggle-left">
+                <h1>Welcome Admin!</h1>
+                <p>Need an admin account?</p>
+                <button class="btn register-btn">Register</button>
+            </div>
+            <div class="toggle-panel toggle-right">
+                <h1>Welcome Back!</h1>
+                <p>Already have an admin account?</p>
+                <button class="btn login-btn">Login</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

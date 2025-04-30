@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Flight Reservation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Include Bootstrap CSS if used -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include FontAwesome for hamburger icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-dashboard">
+    <header class="dashboard-header">
+        <h2 class="dashboard-title">Admin Dashboard</h2>
+        <div class="top-right-nav">
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-logout">Logout</a>
+        </div>
+    </header>
+    <nav class="sidebar">
+        <button class="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <ul class="sidebar-menu">
+            <li><a href="#manage-users">Manage Users</a></li>
+            <li><a href="#manage-bookings">Manage Bookings</a></li>
+            <li><a href="#payments">Payments</a></li>
+            <li><a href="#reports">Reports & Analytics</a></li>
+            <li><a href="#discounts">Discounts & Offers</a></li>
+            <li><a href="#notifications">Notifications</a></li>
+            <li><a href="#customer-support">Customer Support</a></li>
+            <li><a href="#system-settings">System Settings</a></li>
+        </ul>
+    </nav>
+    <div class="dashboard-wrapper">
+        <div class="admin-cards">
+            <!-- Users Management Card -->
+            <div class="admin-card" id="manage-users">
+                <div class="card-inner">
+                    <h4>Manage Users</h4>
+                    {% if users %}
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.fullname }}</td>
+                                    <td>{{ user.role }}</td>
+                                    <td>
+                                        <form method="post" action="{{ url_for('admin_update_user_role') }}" style="display:inline;">
+                                            <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                                            <select name="role" onchange="this.form.submit()">
+                                                <option value="user" {% if user.role=='user' %}selected{% endif %}>User</option>
+                                                <option value="admin" {% if user.role=='admin' %}selected{% endif %}>Admin</option>
+                                                <option value="staff" {% if user.role=='staff' %}selected{% endif %}>Staff</option>
+                                            </select>
+                                        </form>
+                                        <form method="post" action="{{ url_for('admin_delete_user') }}" style="display:inline;">
+                                            <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                                            <button type="submit" class="btn" onclick="return confirm('Delete this user?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <p>No users found.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Bookings Management Card -->
+            <div class="admin-card" id="manage-bookings">
+                <div class="card-inner">
+                    <h4>Manage Bookings</h4>
+                    {% if bookings %}
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                <tr>
+                                    <td>{{ booking.booking_id }}</td>
+                                    <td>{{ booking.user_id }}</td>
+                                    <td>{{ booking.status }}</td>
+                                    <td>
+                                        <form method="post" action="{{ url_for('admin_update_booking_status') }}" style="display:inline;">
+                                            <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
+                                            <select name="status" onchange="this.form.submit()">
+                                                <option value="confirmed" {% if booking.status=='confirmed' %}selected{% endif %}>Confirmed</option>
+                                                <option value="cancelled" {% if booking.status=='cancelled' %}selected{% endif %}>Cancelled</option>
+                                                <option value="pending" {% if booking.status=='pending' %}selected{% endif %}>Pending</option>
+                                            </select>
+                                        </form>
+                                        <form method="post" action="{{ url_for('admin_delete_booking') }}" style="display:inline;">
+                                            <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
+                                            <button type="submit" class="btn" onclick="return confirm('Delete this booking?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <p>No bookings found.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Payments Management Card -->
+            <div class="admin-card" id="payments">
+                <div class="card-inner">
+                    <h4>Payments</h4>
+                    {% if payments %}
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.payment_id }}</td>
+                                    <td>{{ payment.user_id }}</td>
+                                    <td>{{ payment.amount }}</td>
+                                    <td>{{ payment.status }}</td>
+                                    <td>
+                                        <form method="post" action="{{ url_for('admin_update_payment_status') }}" style="display:inline;">
+                                            <input type="hidden" name="payment_id" value="{{ payment.payment_id }}">
+                                            <select name="status" onchange="this.form.submit()">
+                                                <option value="completed" {% if payment.status=='completed' %}selected{% endif %}>Completed</option>
+                                                <option value="pending" {% if payment.status=='pending' %}selected{% endif %}>Pending</option>
+                                                <option value="refunded" {% if payment.status=='refunded' %}selected{% endif %}>Refunded</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <p>No payments found.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reports Card -->
+            <div class="admin-card" id="reports">
+                <div class="card-inner">
+                    <h4>Reports & Analytics</h4>
+                    <form method="get" action="{{ url_for('admin_generate_report') }}">
+                        <label>Report Type:</label>
+                        <select name="type" class="report-select">
+                            <option value="sales">Flight Sales</option>
+                            <option value="cancellations">Cancellations</option>
+                            <option value="trends">Booking Trends</option>
+                            <option value="finance">Financial Summary</option>
+                        </select>
+                        <button type="submit" class="btn">Generate</button>
+                    </form>
+                    {% if report %}
+                        <div class="report-output" style="margin-top: 1rem;">
+                            <h5>Report Results:</h5>
+                            <pre>{{ report }}</pre>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Discounts & Offers Card -->
+            <div class="admin-card" id="discounts">
+                <div class="card-inner">
+                    <h4>Discounts & Offers</h4>
+                    <form method="post" action="{{ url_for('admin_create_discount') }}">
+                        <input type="text" name="code" placeholder="Promo Code" required>
+                        <input type="number" name="percent" placeholder="Discount (%)" min="1" max="100" required>
+                        <input type="date" name="valid_until">
+                        <button type="submit" class="btn">Create</button>
+                    </form>
+                    {% if discounts %}
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Percent</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for discount in discounts %}
+                                <tr>
+                                    <td>{{ discount.code }}</td>
+                                    <td>{{ discount.percent }}</td>
+                                    <td>
+                                        <form method="post" action="{{ url_for('admin_delete_discount') }}" style="display:inline;">
+                                            <input type="hidden" name="code" value="{{ discount.code }}">
+                                            <button type="submit" class="btn" onclick="return confirm('Delete this discount?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Notifications Card -->
+            <div class="admin-card" id="notifications">
+                <div class="card-inner">
+                    <h4>Notifications</h4>
+                    <form method="post" action="{{ url_for('admin_send_notification') }}">
+                        <input type="text" name="subject" placeholder="Subject" required>
+                        <textarea name="message" placeholder="Message" required></textarea>
+                        <button type="submit" class="btn">Send</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Customer Support Card -->
+            <div class="admin-card" id="customer-support">
+                <div class="card-inner">
+                    <h4>Customer Support</h4>
+                    {% if tickets %}
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>User</th>
+                                    <th>Issue</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets %}
+                                <tr>
+                                    <td>{{ ticket.ticket_id }}</td>
+                                    <td>{{ ticket.user_id }}</td>
+                                    <td>{{ ticket.issue }}</td>
+                                    <td>{{ ticket.status }}</td>
+                                    <td>
+                                        <form method="post" action="{{ url_for('admin_update_ticket_status') }}" style="display:inline;">
+                                            <input type="hidden" name="ticket_id" value="{{ ticket.ticket_id }}">
+                                            <select name="status" onchange="this.form.submit()">
+                                                <option value="open" {% if ticket.status=='open' %}selected{% endif %}>Open</option>
+                                                <option value="closed" {% if ticket.status=='closed' %}selected{% endif %}>Closed</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <p>No support tickets.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- System Settings Card -->
+            <div class="admin-card" id="system-settings">
+                <div class="card-inner">
+                    <h4>System Settings</h4>
+                    <form method="post" action="{{ url_for('admin_update_settings') }}">
+                        <label>Payment Gateway Key:</label>
+                        <input type="text" name="payment_gateway" value="{{ settings.payment_gateway or '' }}">
+                        <label>Support Email:</label>
+                        <input type="email" name="support_email" value="{{ settings.support_email or '' }}">
+                        <button type="submit" class="btn">Update Settings</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // JavaScript for toggling sidebar
+        document.querySelector('.sidebar-toggle').addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Flight - Confirm Booking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('home') }}" class="navbar-logo">FlightReserve</a>
+            <ul class="navbar-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="col-12 text-center align-self-center py-5">
+                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                        <h2 class="mb-4">Confirm Your Booking</h2>
+                        <div class="features-cards">
+                            <!-- Flight Details Card -->
+                            <div class="card-3d-wrap mx-3 my-2">
+                                <div class="card-3d-wrapper">
+                                    <div class="card-front feature-card">
+                                        <div class="center-wrap">
+                                            <div class="section text-center">
+                                                <h4 class="mb-4 pb-3">Flight Details</h4>
+                                                <ul class="list-unstyled">
+                                                    <li>Airline: {{ flight.airline }}</li>
+                                                    <li>Flight Number: {{ flight.flight_number }}</li>
+                                                    <li>Departure: {{ flight.departure_time }}</li>
+                                                    <li>Arrival: {{ flight.arrival_time }}</li>
+                                                    <li>Price per seat: {{ flight.price }}</li>
+                                                </ul>
+                                                <form method="POST" action="{{ url_for('confirm_booking') }}">
+                                                    <input type="hidden" name="airline" value="{{ flight.airline }}">
+                                                    <input type="hidden" name="flight_number" value="{{ flight.flight_number }}">
+                                                    <input type="hidden" name="departure_time" value="{{ flight.departure_time }}">
+                                                    <input type="hidden" name="arrival_time" value="{{ flight.arrival_time }}">
+                                                    <input type="hidden" name="base_price" value="{{ flight.price }}">
+                                                    <div class="form-group">
+                                                        <label for="seats">Number of Seats:</label>
+                                                        <input type="number" id="seats" name="seats" min="1" max="10" value="1" required 
+                                                               oninput="updateTotalPrice(this.value, '{{ flight.price }}')"
+                                                               class="form-control">
+                                                    </div>
+                                                    <p>Total Price: <span id="totalPrice">{{ flight.price }}</span></p>
+                                                    <button type="submit" class="btn mt-2">Confirm and Pay</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End of flight details card -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateTotalPrice(seats, priceStr) {
+            // Extract numeric value from price string (e.g., "100.00 USD" -> 100.00)
+            const priceMatch = priceStr.match(/[\d.]+/);
+            const basePrice = priceMatch ? parseFloat(priceMatch[0]) : 0;
+            const total = (basePrice * parseInt(seats)).toFixed(2);
+            document.getElementById('totalPrice').textContent = total + ' ' + priceStr.split(' ')[1];
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flight Reservation - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <button id="themeToggle" class="theme-btn">🌙</button>
+    <div class="section full-height">
+        <div class="center-wrap">
+            <div class="text-center">
+                <h1 style="color: #ffeba7; font-weight: 700;">Book Your Next Adventure</h1>
+                <p style="margin-top: 10px;">Seamless flight reservations with the best deals.</p>
+                <a href="{{ url_for('home') }}" class="btn mt-4">Reserve Now</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

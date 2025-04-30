@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Reservation - Manage Booking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+        /* Responsive card styling from home.html */
+        .features-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .card-3d-wrap {
+            min-width: 320px;
+            max-width: 350px;
+            margin: 1rem;
+        }
+        @media (max-width: 900px) {
+            .features-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card-3d-wrap {
+                min-width: 90vw;
+                max-width: 95vw;
+            }
+        }
+        /* Improved heading styles */
+        .main-heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #007bff; /* Blue from navbar-logo */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 600px) {
+            .main-heading {
+                font-size: 2rem;
+            }
+        }
+        .card-heading {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #ffffff; /* White for contrast on dark background */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #007bff;
+        }
+        /* Booking details styling */
+        .booking-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .booking-details li {
+            margin: 12px 0;
+            font-size: 1.1rem;
+            color: #e0e0e0; /* Light gray for better readability */
+        }
+        .booking-details strong {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        /* Form and button styling */
+        .check-in-form, .cancel-form {
+            margin-top: 1.5rem;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .check-in-form .btn {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .check-in-form .btn:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .cancel-form .btn {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .cancel-form .btn:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        /* Status message */
+        .status-message {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin: 1rem 0;
+        }
+        /* Back link */
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        /* Ensure card background is dark for contrast */
+        .card-front.feature-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a5568 100%); /* Dark gradient */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar from home.html -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('home') }}" class="navbar-logo">FlightReserve</a>
+            <ul class="navbar-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="col-12 text-center align-self-center py-5">
+                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                        <!-- Logout button from home.html -->
+                      
+                        <h2 class="main-heading">Manage Your Booking</h2>
+                        <br><br><br><br>
+                        <div class="features-cards">
+                            <!-- Booking Details Card -->
+                            <div class="card-3d-wrap mx-3 my-2">
+                                <div class="card-3d-wrapper">
+                                    <div class="card-front feature-card">
+                                        <div class="center-wrap">
+                                            <div class="section text-center">
+                                                <h4 class="card-heading">Booking Details</h4>
+                                                <ul class="booking-details">
+                                                    <li><strong>Booking ID:</strong> {{ booking.booking_id }}</li>
+                                                    <li><strong>Airline:</strong> {{ booking.airline }}</li>
+                                                    <li><strong>Flight Number:</strong> {{ booking.flight_number }}</li>
+                                                    <li><strong>Departure:</strong> {{ booking.departure_time }}</li>
+                                                    <li><strong>Arrival:</strong> {{ booking.arrival_time }}</li>
+                                                    <li><strong>Price:</strong> {{ booking.price }}</li>
+                                                    <li><strong>Status:</strong> {{ booking.status }}</li>
+                                                </ul>
+                                                {% if booking.status != "checked-in" and booking.status != "Cancelled" %}
+                                                <form method="POST" action="{{ url_for('check_in') }}" class="check-in-form">
+                                                    <input type="hidden" name="booking_ref" value="{{ booking.booking_id }}">
+                                                    <button type="submit" class="btn">Check In</button>
+                                                </form>
+                                                <form method="POST" action="{{ url_for('cancel_booking') }}" class="cancel-form">
+                                                    <input type="hidden" name="booking_ref" value="{{ booking.booking_id }}">
+                                                    <button type="submit" class="btn">Cancel Booking</button>
+                                                </form>
+                                                {% elif booking.status == "checked-in" %}
+                                                <p class="status-message">You have already checked in!</p>
+                                                <form method="POST" action="{{ url_for('cancel_booking') }}" class="cancel-form">
+                                                    <input type="hidden" name="booking_ref" value="{{ booking.booking_id }}">
+                                                    <button type="submit" class="btn">Cancel Booking</button>
+                                                </form>
+                                                {% else %}
+                                                <p class="status-message">This booking has been cancelled.</p>
+                                                {% endif %}
+                                                <a href="{{ url_for('my_bookings') }}" class="back-link">Back to My Bookings</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

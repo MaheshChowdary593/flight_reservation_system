@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Reservation - Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+        /* Responsive cards (copied from home.html for consistency) */
+        .features-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .card-3d-wrap {
+            min-width: 320px;
+            max-width: 350px;
+            margin: 1rem;
+        }
+        @media (max-width: 900px) {
+            .features-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card-3d-wrap {
+                min-width: 90vw;
+                max-width: 95vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (copied from home.html) -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('home') }}" class="navbar-logo">FlightReserve</a>
+            <ul class="navbar-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="col-12 text-center align-self-center py-5">
+                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                       
+                        <h2 class="mb-4">Flight Search Results</h2>
+                        <!-- Flight Cards (No flash messages) -->
+                        <div class="features-cards">
+                            {% if flights %}
+                                {% for flight in flights %}
+                                    <div class="card-3d-wrap mx-3 my-2">
+                                        <div class="card-3d-wrapper">
+                                            <div class="card-front feature-card">
+                                                <div class="center-wrap">
+                                                    <div class="section text-center">
+                                                        <h4 class="mb-4 pb-3">{{ flight.airline }} {{ flight.flight_number }}</h4>
+                                                        <p class="mb-2">From: {{ flight.departure_time }}</p>
+                                                        <p class="mb-2">To: {{ flight.arrival_time }}</p>
+                                                        <p class="mb-3">Price: {{ flight.price }}</p>
+                                                        <form action="{{ url_for('book_flight') }}" method="post">
+                                                            <input type="hidden" name="airline" value="{{ flight.airline }}">
+                                                            <input type="hidden" name="flight_number" value="{{ flight.flight_number }}">
+                                                            <input type="hidden" name="departure_time" value="{{ flight.departure_time }}">
+                                                            <input type="hidden" name="arrival_time" value="{{ flight.arrival_time }}">
+                                                            <input type="hidden" name="price" value="{{ flight.price }}">
+                                                            <button type="submit" class="btn mt-2">Book Now</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No flights found for your search criteria.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

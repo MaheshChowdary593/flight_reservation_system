@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <title>Login / Sign Up</title>
+    <script>
+        function validateEmail(fieldId, errorId) {
+            let emailField = document.getElementById(fieldId);
+            let errorMsg = document.getElementById(errorId);
+            let email = emailField.value.trim();
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email.length === 0) {
+                emailField.style.border = "2px solid red";
+                errorMsg.innerText = "Email cannot be empty";
+                return false;
+            }
+
+            if (!emailPattern.test(email)) {
+                emailField.style.border = "2px solid red";
+                errorMsg.innerText = "Invalid Email format (e.g., your_name@domain.com)";
+                return false;
+            }
+
+            emailField.style.border = "2px solid green";
+            errorMsg.innerText = "";
+            return true;
+        }
+
+        function validatePassword(fieldId, errorId) {
+            let passwordField = document.getElementById(fieldId);
+            let errorMsg = document.getElementById(errorId);
+            let password = passwordField.value.trim();
+
+            let up = 0, lc = 0, num = 0, cha = 0;
+
+            if (password.length === 0) {
+                passwordField.style.border = "2px solid red";
+                errorMsg.innerText = "Password cannot be empty";
+                return false;
+            }
+
+            for (let i = 0; i < password.length; i++) {
+                let char = password[i];
+                if (char >= 'A' && char <= 'Z') up++;
+                else if (char >= 'a' && char <= 'z') lc++;
+                else if (char >= '0' && char <= '9') num++;
+                else cha++;
+            }
+
+            if (up > 0 && lc > 0 && num > 0 && cha > 0 && password.length >= 8) {
+                passwordField.style.border = "2px solid green";
+                errorMsg.innerText = "";
+                return true;
+            } else {
+                passwordField.style.border = "2px solid red";
+                errorMsg.innerText = "Must have: 1 uppercase, 1 lowercase, 1 number, 1 special char, min 8 chars";
+                return false;
+            }
+        }
+
+        function validateNameOnSubmit() {
+            let nameInput = document.getElementById("signup-name");
+            let nameError = document.getElementById("fullname-error");
+            let nameValue = nameInput.value.trim();
+
+            nameError.textContent = "";
+            nameInput.style.border = "2px solid green";
+
+            if (nameValue === "") {
+                nameInput.style.border = "2px solid red";
+                nameError.textContent = "Full name cannot be empty.";
+                return false;
+            }
+
+            if (!/^[A-Za-z\s]+$/.test(nameValue)) {
+                nameInput.style.border = "2px solid red";
+                nameError.textContent = "Name can only contain letters and spaces.";
+                return false;
+            }
+
+            if (nameValue.length < 2) {
+                nameInput.style.border = "2px solid red";
+                nameError.textContent = "Name must be at least 2 characters long.";
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateLoginForm() {
+            return validateEmail('login-email', 'login-email-error') &&
+                   validatePassword('login-password', 'login-password-error');
+        }
+
+        function validateSignupForm() {
+            return validateNameOnSubmit() &&
+                   validateEmail('signup-email', 'signup-email-error') &&
+                   validatePassword('signup-password', 'signup-password-error');
+        }
+    </script>
+</head>
+
+<body>
+
+    <a href="https://front.codes/" class="logo" target="_blank"></a>
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="col-12 text-center align-self-center py-5">
+                    <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                        <h6 class="mb-0 pb-3"><span>Log In</span><span>Sign Up</span></h6>
+                        <input class="checkbox" type="checkbox" id="reg-log" name="reg-log" />
+                        <label for="reg-log"></label>
+                        <div class="card-3d-wrap mx-auto">
+                            <div class="card-3d-wrapper">
+
+                                <!-- Login Card -->
+                                <div class="card-front">
+                                    <div class="center-wrap">
+                                        <div class="section text-center">
+                                            <h4 class="mb-4 pb-3">Log In</h4>
+                                            {% with messages = get_flashed_messages(with_categories=true) %}
+                                                {% if messages %}
+                                                    <ul class="flashed-messages">
+                                                        {% for category, message in messages %}
+                                                            <li class="alert alert-{{ category }}">{{ message }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            {% endwith %}
+                                            <form action="/login" method="POST" onsubmit="return validateLoginForm()">
+                                                <div class="form-group">
+                                                    <input type="email" name="email" class="form-style" placeholder="Your Email" id="login-email" autocomplete="off" oninput="validateEmail('login-email', 'login-email-error')">
+                                                    <i class="input-icon uil uil-at"></i>
+                                                </div>
+                                                <small id="login-email-error" class="text-danger"></small>
+                                                <div class="form-group mt-2">
+                                                    <input type="password" name="password" class="form-style" placeholder="Your Password" id="login-password" autocomplete="off" oninput="validatePassword('login-password', 'login-password-error')">
+                                                    <i class="input-icon uil uil-lock-alt"></i>
+                                                </div>
+                                                <small id="login-password-error" class="text-danger"></small>
+                                                <button type="submit" class="btn mt-4" name="login">Login</button>
+                                            </form>
+                                            <div class="d-flex justify-content-between">
+                                                <p class="mb-0 mt-4 text-left"><a href="{{ url_for('password_reset') }}" class="link">Forgot your password?</a></p>
+                                                <p class="mb-0 mt-4 text-right"><a href="{{ url_for('login_google') }}" class="link">Login with Google</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Signup Card -->
+                                <div class="card-back">
+                                    <div class="center-wrap">
+                                        <div class="section text-center">
+                                            <h4 class="mb-4 pb-3">Sign Up</h4>
+                                            <form action="/login" method="POST" onsubmit="return validateSignupForm()">
+                                                <div class="form-group">
+                                                    <input type="text" name="fullname" class="form-style" placeholder="Your Full Name" id="signup-name" autocomplete="off" oninput="validateNameOnSubmit()">
+                                                    <i class="input-icon uil uil-user"></i>
+                                                </div>
+                                                <small id="fullname-error" class="text-danger"></small>
+                                                <div class="form-group mt-2">
+                                                    <input type="email" name="email" class="form-style" placeholder="Your Email" id="signup-email" autocomplete="off" oninput="validateEmail('signup-email', 'signup-email-error')">
+                                                    <i class="input-icon uil uil-at"></i>
+                                                </div>
+                                                <small id="signup-email-error" class="text-danger"></small>
+                                                <div class="form-group mt-2">
+                                                    <input type="password" name="password" class="form-style" placeholder="Your Password" id="signup-password" autocomplete="off" oninput="validatePassword('signup-password', 'signup-password-error')">
+                                                    <i class="input-icon uil uil-lock-alt"></i>
+                                                </div>
+                                                <small id="signup-password-error" class="text-danger"></small>
+                                                <button type="submit" class="btn mt-4" name="signup">Sign Up</button>
+                                            </form>
+                                            <p class="mb-0 mt-4 text-right"><a href="{{ url_for('login_google') }}" class="link">Login with Google</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- End card -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
